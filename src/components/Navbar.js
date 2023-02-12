@@ -26,7 +26,7 @@ const Navbar = () => {
         </li>
         <li className="navbar__item">
           <NavLink
-            to="/category/men's-clothing"
+            to="/category/men"
             className={({ isActive }) =>
               isActive ? "active-link navbar__link" : "navbar__link"
             }
@@ -37,7 +37,7 @@ const Navbar = () => {
         </li>
         <li className="navbar__item">
           <NavLink
-            to="/category/women's-clothing"
+            to="/category/women"
             className={({ isActive }) =>
               isActive ? "active-link navbar__link" : "navbar__link"
             }
@@ -48,7 +48,7 @@ const Navbar = () => {
         </li>
         <li className="navbar__item">
           <NavLink
-            to="/category/jewelery"
+            to="/category/jewelry"
             className={({ isActive }) =>
               isActive ? "active-link navbar__link" : "navbar__link"
             }
@@ -58,10 +58,10 @@ const Navbar = () => {
           </NavLink>
         </li>
         <li className="navbar__item">
-          <a href="#cart" className="navbar__link">
+          <Link to="/cart" className="navbar__link">
             <CartWidget />
             <span>Cart</span>
-          </a>
+          </Link>
         </li>
       </ul>
     </nav>

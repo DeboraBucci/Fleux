@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+
 import Item from "./Item";
 import Spinner from "./Spinner";
 
@@ -13,24 +21,37 @@ const ItemList = ({ greeting }) => {
   useEffect(() => {
     setProducts([]);
     setIsLoading(true);
-    fetch(
-      `https://fakestoreapi.com/products${
-        category !== undefined ? `/category/${categoryString}` : ""
-      }`
-    )
-      .then((res) => res.json())
-      .then((data) => {
+
+    const database = getFirestore();
+    const querySnapshot = collection(database, "products");
+
+    const newConfig = category
+      ? query(querySnapshot, where("category", "==", category))
+      : querySnapshot;
+
+    getDocs(newConfig)
+      .then((res) => {
+        const data = res.docs.map((doc) => {
+          const obj = doc.data();
+          return { ...obj, id: doc.id };
+        });
+
         setProducts(data);
         setIsLoading(false);
-      });
+      })
+      .catch((err) => console.log(err));
   }, [category, categoryString]);
 
   return (
     <div className="items-container">
-      <p className="path">
-        <span>HOME</span> {category ? "/ " : ""}
-        <span>{category ? category.toUpperCase() : ""}</span>
-      </p>
+      {category && (
+        <p className="path">
+          <Link to="/">
+            <span>HOME</span>
+          </Link>{" "}
+          / <span>{category ? category.toUpperCase() : ""}</span>
+        </p>
+      )}
       <h2>{greeting}</h2>
 
       <Spinner loading={isLoading} />
@@ -42,10 +63,11 @@ const ItemList = ({ greeting }) => {
               title={product.title}
               description={product.description}
               img={product.image}
-              rating={product.rating.rate}
+              rating={product.ratings.rating}
               price={product.price}
               key={product.id}
               id={product.id}
+              stock={product.stock}
             />
           ))}
         </ul>
